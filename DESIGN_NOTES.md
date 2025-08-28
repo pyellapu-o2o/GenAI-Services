@@ -231,3 +231,25 @@ aws cloudwatch get-metric-data --metric-name FundFactsheetSuccessRate
 ```
 
 This separation creates a clean architecture where platform concerns are separated from business concerns, enabling both teams to move quickly without stepping on each other's toes.
+
+## 🎯 Service Naming (llm-chat-service or llm-prompt-service or any other)
+
+Based on the analysis provided, here are the recommendations for naming the service:
+
+### **1. Analysis of Current Options**
+
+* **llm-chat-service**: This name is too narrow as it implies the service is only for conversational chat. A broader scope is required.
+* **llm-prompt-service**: A better name, but it still focuses only on the input (the prompt) rather than the overall process, which may include things like orchestration, state management, and provider routing.
+* **ai-inference-service**: This name is accurate as it describes the core function of the service (making inferences), but it is very technical and might not be as clear to a broader audience.
+* **model-inference-service**: This is a clear and accurate name, but the term "model" can be generic. It's also a bit verbose.
+
+### **2. Recommendation: `llm-orchestration-service`**
+
+The most recommended name is `llm-orchestration-service`.
+
+#### **Why this name?**
+
+* **Accurate**: The name precisely describes the service's role. It doesn't just send prompts or handle chat; it orchestrates the entire process, including routing requests, managing state, and potentially handling multiple providers.
+* **Scalable**: This name is broad enough to cover current functionalities like chat and completion while also accommodating future capabilities and integrations with other LLM providers.
+* **Professional**: It has an enterprise-grade feel that suggests a robust and well-defined service.
+* **Clear**: The term "orchestration" clearly communicates to developers that the service manages the complexity of interacting with large language models, rather than just acting as a simple passthrough.
