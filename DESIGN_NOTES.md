@@ -253,3 +253,89 @@ The most recommended name is `llm-orchestration-service`.
 * **Scalable**: This name is broad enough to cover current functionalities like chat and completion while also accommodating future capabilities and integrations with other LLM providers.
 * **Professional**: It has an enterprise-grade feel that suggests a robust and well-defined service.
 * **Clear**: The term "orchestration" clearly communicates to developers that the service manages the complexity of interacting with large language models, rather than just acting as a simple passthrough.
+
+## 🎯 Key Differences: Dependency Management in a GenAI Platform
+
+-----
+
+### 1\. `genai-platform/requirements.txt` (Root Level)
+
+  * **Purpose**: Shared dependencies across **all** services and the entire platform.
+  * **Scope**: Global, platform-wide dependencies.
+  * **Typical Content**:
+
+<!-- end list -->
+
+```txt
+# Core framework and shared utilities
+boto3>=1.28.0
+PyPDF2>=3.0.0
+python-magic>=0.4.27
+Jinja2>=3.1.0
+python-dateutil>=2.8.0
+requests>=2.28.0
+
+# Shared AI/ML dependencies (used by multiple services)
+```
+
+### 2\. `genai-platform/core-services/llm-orchestration-service/requirements.txt` (Service Level)
+
+  * **Purpose**: Service-specific dependencies **only** for this particular Lambda function.
+  * **Scope**: Specific to the LLM Orchestration Service.
+  * **Typical Content**:
+
+<!-- end list -->
+
+```txt
+# Service-specific dependencies only
+# Note: Empty or minimal since most dependencies are in the shared layer
+
+# This file might be empty or contain service-specific packages
+# that aren't needed by other services
+```
+
+-----
+
+## Why This Structure?
+
+This dependency management strategy separates shared dependencies, which are installed in **Lambda Layers**, from service-specific dependencies, which are installed in individual Lambda packages.
+
+### Real-world Example 💡
+
+```txt
+# genai-platform/requirements.txt (Shared Layer)
+# These go into a shared Lambda Layer
+boto3==1.28.5
+PyPDF2==3.0.1
+python-magic==0.4.27
+Jinja2==3.1.2
+requests==2.28.2
+```
+
+```txt
+# genai-platform/core-services/llm-orchestration-service/requirements.txt (Service-specific)
+# This service might need something very specific
+# that other services don't need
+special-ai-library==1.2.3  # Only used by this service
+```
+
+### Deployment Impact
+
+Using a shared layer significantly reduces deployment size and cold start times.
+
+  * **With Shared Layer**: Shared dependencies (5MB) + Service package (0.1MB) = **5.1MB** total per service.
+  * **Without Shared Layer**: Each service package (5.1MB) × 5 services = **25.5MB** total.
+
+-----
+
+## Best Practices
+
+  * For most services, the service-level `requirements.txt` file should be **empty or minimal**.
+  * Use service-specific `requirements.txt` only for:
+      * Dependencies not used by other services.
+      * Different versions of a package needed by different services.
+      * Experimental or temporary dependencies.
+
+This approach minimizes deployment package size, reduces cold starts, and simplifies dependency management across your platform.
+
+
